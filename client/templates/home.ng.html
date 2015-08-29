@@ -1,55 +1,8 @@
-
-
 <div class="app app-home">
   <div class="sidebar">
     <div class="sidebar-top">
       <span class="sidebar-logo"></span>
-
-    </div>
-
-
-    <div class="sidebar-content" ng-hide="!currentTrack">
-      <div class="sidebar-title">
-        Now
-      </div>
-    </div>
-
-    <div class="sidebar-playing" ng-hide="!currentTrack">
-      <div class="track track-playing">
-        <div class="track-title">{{ currentTrack.title }}</div>
-        <div class="track-author">{{ currentTrack.artist.name }}</div>
-      </div>
-    </div>
-
-    <div class="sidebar-content">
-      <div class="sidebar-title">
-        Next
-      </div>
-    </div>
-
-    <div class="sidebar-playlist">
-      <div ng-repeat="track in tracks" class="track" ng-click="playTrack(track)">
-        <div class="track-title">{{ track.title }}</div>
-        <div class="track-author">{{ track.artist.name }}</div>
-      </div>
-    </div>
-
-
-    <a ng-click="pause()" ng-show="playing">Pause</a>
-    <a ng-click="resume()" ng-show="! playing">Resume</a>
-    <a ng-click="next()">Next</a>
-
-    <div ng-repeat="genre in genres">
-      {{ genre }}
     </div>
   </div>
-
-  <div class="content" style="background: url({{ currentImageUrl }}) no-repeat;">
-  </div>
+  <div class="content" style="background: url({{ currentImageUrl }}) no-repeat;"></div>
 </div>
-
-<!--
-<a ng-click="pause()" ng-show="playing">Pause</a>
-<a ng-click="resume()" ng-show="! playing">Resume</a>
-<a ng-click="next()">Next</a>
--->
