@@ -5,44 +5,26 @@ app.controller "HeatMapCtrl",
     uiGmapIsReady.promise(1).then (instances) ->
       instances.forEach (inst) ->
         map = inst.map
-        MockHeatLayer layer
+        HeatLayer layer
         return
       return
     layer = undefined
 
-    MockHeatLayer = (heatLayer) ->
+    HeatLayer = (heatLayer) ->
       pointarray = undefined
       houseData = []
-      pointArray = new (google.maps.MVCArray)(houseData)
-      #heatLayer.setData(pointArray);
+      pointArray = new google.maps.MVCArray houseData
       $meteor
-      .call("getUserData")
-      .then((result) ->
-        result.forEach (record) ->
-          houseData.push({location:new google.maps.LatLng(record.lat, record.lng), weight:1})
-        heatmap = new (google.maps.visualization.HeatmapLayer)(data: pointArray)
-        heatmap.setMap map
-        heatmap.set 'radius', 20
-      , (error) ->
-        console.log(error)
-      )
-  #      gradient = [
-  #        'rgba(0, 255, 255, 0)'
-  #        'rgba(0, 255, 255, 1)'
-  #        'rgba(0, 191, 255, 1)'
-  #        'rgba(0, 127, 255, 1)'
-  #        'rgba(0, 63, 255, 1)'
-  #        'rgba(0, 0, 255, 1)'
-  #        'rgba(0, 0, 223, 1)'
-  #        'rgba(0, 0, 191, 1)'
-  #        'rgba(0, 0, 159, 1)'
-  #        'rgba(0, 0, 127, 1)'
-  #        'rgba(63, 0, 91, 1)'
-  #        'rgba(127, 0, 63, 1)'
-  #        'rgba(191, 0, 31, 1)'
-  #        'rgba(255, 0, 0, 1)'
-  #      ]
-  #      heatmap.set 'gradient', gradient
+        .call("getUserData")
+        .then(
+          (result) ->
+            result.forEach (record) ->
+              houseData.push { location:new google.maps.LatLng( record.lat, record.lng ), weight: 0.5 }
+            heatmap = new google.maps.visualization.HeatmapLayer { data: pointArray, map: map, radius: 15 }
+          , 
+          (error) ->
+            console.log(error)
+        )
       return
 
     $scope.heatLayerCallback = (layer) ->
@@ -52,9 +34,16 @@ app.controller "HeatMapCtrl",
 
     $scope.map =
       center:
-        latitude: 52.465527
-        longitude: 5.565698
-      zoom: 8
+        latitude: 52.5125000
+        longitude: 6.094440
+      zoom: 13
+      options: {
+        disableDefaultUI: true
+        zoomControl: true
+        zoomControlOptions: { 
+          style: google.maps.ZoomControlStyle.SMALL 
+        }
+      }
     $scope.showHeat = true
     $scope.locationCompanies = []
     uiGmapGoogleMapApi.then (maps) ->
