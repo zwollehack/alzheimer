@@ -1,0 +1,15 @@
+# Meteor packages used by this project, one per line.
+#
+# 'meteor add' and 'meteor remove' will edit this file for you,
+# but you can also edit it by hand.
+
+meteor-platform
+urigo:angular
+mquandalle:bower
+angularui:angular-ui-router
+coffeescript
+less
+accounts-password
+http
+nemo64:bootstrap
+fortawesome:fontawesome

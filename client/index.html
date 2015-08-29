@@ -1,0 +1,20 @@
+<head>
+  <title>meezer</title>
+</head>
+
+<body>
+
+	<div id="dz-root"></div>
+	<script>
+	  window.dzAsyncInit = function() {
+	  	angular.bootstrap(document, ["app.example"]);
+	  };
+	  (function() {
+		var e = document.createElement('script');
+		e.src = 'https://cdns-files.deezer.com/js/min/dz.js';
+		e.async = true;
+		document.getElementById('dz-root').appendChild(e);
+	  }());
+	</script>
+  <div class="site-wrapper" ui-view></div>
+</body>
