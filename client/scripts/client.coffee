@@ -2,7 +2,7 @@ app.config [
   "$urlRouterProvider"
   "$stateProvider"
   ($urlRouterProvider, $stateProvider) ->
-    $urlRouterProvider.otherwise "/register"
+    $urlRouterProvider.otherwise "/heatmap"
     $stateProvider.state("genres",
       url: "/genres"
       templateUrl: "client/templates/genres.ng.html"
@@ -19,6 +19,10 @@ app.config [
       url: "/register"
       templateUrl: "client/templates/register.ng.html"
       controller: "RegisterCtrl")
+    $stateProvider.state("heatmap",
+      url: "/heatmap"
+      templateUrl: "client/templates/heatMap.ng.html"
+      controller: "HeatMapCtrl")
     DZ.init({
       appId : '156051',
       channelUrl : 'http://localhost:3000/channel.html'
