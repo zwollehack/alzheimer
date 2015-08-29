@@ -25,7 +25,14 @@ doMeteorSync = (url) ->
   response = Meteor.wrapAsync(doMeteor)(url)
   JSON.parse(response)
 
+
+entries = []
+
+Meteor.startup ->
+  entries = JSON.parse(Assets.getText("entries.json"))
+  console.log("Loaded #{entries.length} entries for database")
+
+
 Meteor.methods
   getUserData: ->
-    data = JSON.parse(Assets.getText("entries.json"))
-    data
+    entries
