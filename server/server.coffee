@@ -35,4 +35,18 @@ Meteor.startup ->
 
 Meteor.methods
   getUserData: ->
-    entries
+    minLat = 180
+    maxLat = 0
+    minLng = 180
+    maxLng = 0
+    entries.forEach (e) ->
+      minLat = Math.min(e.lat, minLat)
+      maxLat = Math.max(e.lat, maxLat)
+      minLng = Math.min(e.lng, minLng)
+      maxLng = Math.max(e.lng, maxLng)
+
+
+
+    entries.map (e) ->
+      lat: e.lat
+      lng: e.lng
