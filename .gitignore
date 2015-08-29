@@ -1,4 +1,5 @@
 .DS_Store
 .idea
 *.sublime-*
-/.project
+.project
+private/entries.json

@@ -19,18 +19,34 @@ Tasks.allow
     true
 
 doMeteor = (url, callback) ->
-  fullUrl = "http://api.deezer.com#{url}&access_token=frMHLvY5Rn5538e52355b6cFG4em2dj5538e52355ba42KmaS4"
-  console.log fullUrl
-  Meteor.http.get(fullUrl, {}, callback)
+  Meteor.http.get(url, {}, callback)
 
 doMeteorSync = (url) ->
   response = Meteor.wrapAsync(doMeteor)(url)
-  JSON.parse(response.content)
+  JSON.parse(response)
+
+
+entries = []
+
+Meteor.startup ->
+  entries = JSON.parse(Assets.getText("entries.json"))
+  console.log("Loaded #{entries.length} entries for database")
 
 
 Meteor.methods
-  getTracks: (genre, mood) =>
-    doMeteorSync("/search?q=#{mood}")
+  getUserData: ->
+    minLat = 180
+    maxLat = 0
+    minLng = 180
+    maxLng = 0
+    entries.forEach (e) ->
+      minLat = Math.min(e.lat, minLat)
+      maxLat = Math.max(e.lat, maxLat)
+      minLng = Math.min(e.lng, minLng)
+      maxLng = Math.max(e.lng, maxLng)
 
-  getGenres: ->
-    doMeteorSync("/genre")
+
+
+    entries.map (e) ->
+      lat: e.lat
+      lng: e.lng
