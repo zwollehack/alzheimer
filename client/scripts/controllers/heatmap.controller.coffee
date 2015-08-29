@@ -19,9 +19,9 @@ app.controller "HeatMapCtrl",
       .call("getUserData")
       .then((result) ->
         console.log "XXX", result
-        result.splice(0,100).forEach (record) ->
-          houseData.push({location:new google.maps.LatLng(record["latitude"], record["longitude"]), weight:1})
-        console.log(google.maps.visualization)
+        result.forEach (record) ->
+          console.log(record.lat)
+          houseData.push({location:new google.maps.LatLng(record.lng, record.lat), weight:1})
         heatmap = new (google.maps.visualization.HeatmapLayer)(data: pointArray)
         heatmap.setMap map
         heatmap.set 'radius', 20
@@ -57,7 +57,6 @@ app.controller "HeatMapCtrl",
         latitude: 52.465527
         longitude: 5.565698
       zoom: 8
-      options: maxZoom: 12
     $scope.showHeat = true
     $scope.locationCompanies = []
     uiGmapGoogleMapApi.then (maps) ->
