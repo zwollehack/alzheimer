@@ -18,10 +18,8 @@ app.controller "HeatMapCtrl",
       $meteor
       .call("getUserData")
       .then((result) ->
-        console.log "XXX", result
         result.forEach (record) ->
-          console.log(record.lat)
-          houseData.push({location:new google.maps.LatLng(record.lng, record.lat), weight:1})
+          houseData.push({location:new google.maps.LatLng(record.lat, record.lng), weight:1})
         heatmap = new (google.maps.visualization.HeatmapLayer)(data: pointArray)
         heatmap.setMap map
         heatmap.set 'radius', 20
