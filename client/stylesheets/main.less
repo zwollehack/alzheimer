@@ -1,5 +1,4 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
-
 body {
   font-family: "Open Sans",Helvetica,Arial,sans-serif;
   font-size: 13px;
@@ -191,14 +190,35 @@ body {
 html, body {
   height: 100%;
   width: 100%;
-  margin: 0px;
+  margin: 0;
+}
+.angular-google-map {
+  height: 100%;
+  width: 100%;
+  display: block;
 }
 .angular-google-map-container {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 15%;
-  left: 0;
   width: 100%;
   height: 100%;
+  margin: 40px 0 0 0;
+}
+.wrapper {
+  padding: 20px;
+}
+#skip-value-lower {
+  display: inline-block;
+}
+#skip-value-upper {
+  display: inline-block;
+  position: absolute;
+  right: 20px;
+}
+.noUi-target {
+  height: 5px;
+}
+.noUi-handle:after, .noUi-handle:before {
+  height: 5px;
+}
+.noUi-horizontal .noUi-handle {
+  height: 19px;
 }
