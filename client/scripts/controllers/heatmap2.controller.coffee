@@ -28,40 +28,8 @@ app.controller "HeatMapCtrl2",
           style: google.maps.ZoomControlStyle.SMALL
 
     $scope.polys = []
-    $scope.ageGroups = [
-      name: "All"
-      min: 0
-      max: 200
-    ,
-      name: "18 - 24"
-      min: 0
-      max: 24
-    ,
-      name: "25 - 39"
-      min: 25
-      max: 39
-    ,
-      name: "40 - 54"
-      min: 40
-      max: 54
-    ,
-      name: "55 - 64"
-      min: 54
-      max: 64
-    ,
-      name: "65 - 74"
-      min: 65
-      max: 74
-    ,
-      name: "75 - 84"
-      min: 75
-      max: 84
-    ,
-      name: "85 + "
-      min: 85
-      max: 200
-    ]
-    $scope.ageGroup = $scope.ageGroups[0]
+
+    $scope.ageGroup = {min:0,max:200}
     $scope.levelOfDetails = [
       name: "Neighbourhood"
       value: "neighbourhoodCode"
@@ -131,7 +99,7 @@ app.controller "HeatMapCtrl2",
       behaviour: 'tap-drag'
       range: {
         'min': 0
-        'max': 105
+        'max': 200
       }
       pips: {
         mode: 'range'
