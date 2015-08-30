@@ -181,7 +181,4 @@ Meteor.methods
 
     console.log "Finished questionary matching"
 
-    x = filteredPeople.filter (fp) ->
-      fp is not null
-
     filteredPeople
