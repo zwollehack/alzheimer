@@ -1,6 +1,6 @@
 app.controller "HeatMapCtrl3",
-  ["$scope", "$state",  "$interval", "$window", "$meteor", "_util", "uiGmapGoogleMapApi", "uiGmapIsReady",
-  ($scope, $state, $interval,  $window, $meteor, _util, uiGmapGoogleMapApi, uiGmapIsReady) ->
+  ["$scope", "$state",  "$interval", "$timeout", "$window", "$meteor", "_util", "uiGmapGoogleMapApi", "uiGmapIsReady",
+  ($scope, $state, $interval, $timeout, $window, $meteor, _util, uiGmapGoogleMapApi, uiGmapIsReady) ->
     map = undefined
     uiGmapIsReady.promise(1).then (instances) ->
       instances.forEach (inst) ->
@@ -94,25 +94,32 @@ app.controller "HeatMapCtrl3",
     uiGmapGoogleMapApi.then (maps) ->
       map = maps
 
+    updateTimeout = null
     $scope.updateHeatmap = ->
-      $meteor
-      .call("getGroupedData", $scope.elderMax, $scope.elderMin, $scope.youngMax, $scope.youngMin, $scope.percentage)
-      .then((result) ->
-        console.log result
-        # result.forEach (record) ->
-        #   houseData.push({location: new google.maps.LatLng(record.lat, record.lng), weight: record.count})
-        # heatmap = new (google.maps.visualization.HeatmapLayer)(data: pointArray)
-        # heatmap.setMap map
-        # heatmap.set 'radius', 20
-        $scope.polys = result.map (r, idx) ->
-          id: idx
-          stroke: {weight: 1, color: "#222222", opacity: 0.1},
-          fill: {color: colors[r.level], opacity: 0.7},
-          path: r.polygon
-      , (error) ->
-        console.log(error)
-      )
+      if (updateTimeout)
+        $timeout.cancel(updateTimeout)
+        updateTimeout = null
 
+      updateTimeout = $timeout(->
+        $meteor
+        .call("getGroupedData", $scope.elderMax, $scope.elderMin, $scope.youngMax, $scope.youngMin, $scope.percentage)
+        .then((result) ->
+          console.log result
+          # result.forEach (record) ->
+          #   houseData.push({location: new google.maps.LatLng(record.lat, record.lng), weight: record.count})
+          # heatmap = new (google.maps.visualization.HeatmapLayer)(data: pointArray)
+          # heatmap.setMap map
+          # heatmap.set 'radius', 20
+
+          $scope.polys = result.map (r, idx) ->
+            id: idx
+            stroke: {weight: 1, color: "#222222", opacity: 0.1},
+            fill: {color: colors[r.level], opacity: 0.7},
+            path: r.polygon
+        , (error) ->
+          console.log(error)
+        )
+      , 250)
 
     $scope.$watch("elderMin", $scope.updateHeatmap)
     $scope.$watch("elderMax", $scope.updateHeatmap)
