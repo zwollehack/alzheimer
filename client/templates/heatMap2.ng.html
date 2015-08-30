@@ -13,9 +13,16 @@
     <div class="row">
       <form>
         <div class="form-group">
-          <label for="ageGroup">Age Group</label>
-            <select id="ageGroup" ng-model="ageGroup" ng-options="i.name for i in ageGroups">
+          <label for="ageGroup">Level of Detail</label>
+            <select id="levelOfDetail" ng-model="levelOfDetail" ng-options="i.name for i in levelOfDetails">
             </select>
+        </div>
+        <div class="form-group">
+            <div class="wrapper" >
+                <div id="skip-value-lower">{{ageGroup.min}}</div>
+                <div id="skip-value-upper">{{ageGroup.max}}</div>
+                <div id="range"></div>
+            </div>
         </div>
       </form>
     </div>

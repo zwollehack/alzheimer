@@ -28,10 +28,13 @@ doMeteorSync = (url) ->
 entries = []
 neighbourhoods = []
 groupedData = []
+answers = []
 
 Meteor.startup ->
   entries = JSON.parse(Assets.getText("entries.json"))
   console.log("Loaded #{entries.length} entries for users")
+  answers = JSON.parse(Assets.getText("answers.json"))
+  console.log("Loaded #{answers.length} answers for users")
   neighbourhoods = JSON.parse(Assets.getText("bu_2014.json")).features.map (f) ->
     id: f.properties["BU_2014"]
     name: f.properties["BU_NAAM"]
@@ -41,7 +44,7 @@ Meteor.startup ->
   console.log("Loaded #{neighbourhoods.length} entries for neighbourhoods")
 
 Meteor.methods
-  getUserData: (ageGroup) ->
+  getUserData: (levelOfDetail, ageGroup, question = "none") ->
     minLat = 180
     maxLat = 0
     minLng = 180
@@ -52,19 +55,51 @@ Meteor.methods
       minLng = Math.min(e.lng, minLng)
       maxLng = Math.max(e.lng, maxLng)
 
-    groupedResult = entries
-    .filter (e) ->
-      e.age >= ageGroup.min and e.age <= ageGroup.max
-    .groupBy (e) -> e.neighbourhoodCode
-    calculatedResult = Object.keys(groupedResult).map (nCode) ->
-      nb = neighbourhoods.find((e) -> e.id is "0193#{nCode}0")
-      name: nb.name
-      polygon: nb.polygon
-      count: groupedResult[nCode].length
-    sortedResult = calculatedResult.sort (a, b) -> a.count - b.count
-    sortedResult.map (e, idx) ->
-      e.level = Math.floor(idx / sortedResult.length * 10)
-      e
+    if (levelOfDetail is "single")
+      entries
+      .filter (e) ->
+        e.age >= ageGroup.min and e.age <= ageGroup.max
+      .map (e) ->
+        lat: e.lat
+        lng: e.lng
+        count: 1
+    else if (levelOfDetail is "neighbourhoodCode" and question is "none")
+      groupedResult = entries
+      .filter (e) ->
+        e.age >= ageGroup.min and e.age <= ageGroup.max
+      .groupBy (e) -> e.neighbourhoodCode
+      calculatedResult = Object.keys(groupedResult).map (nCode) ->
+        nb = neighbourhoods.find((e) -> e.id is "0193#{nCode}0")
+        name: nb.name
+        polygon: nb.polygon
+        count: groupedResult[nCode].length
+      sortedResult = calculatedResult.sort (a, b) -> a.count - b.count
+      sortedResult.map (e, idx) ->
+        e.level = Math.floor(idx / sortedResult.length * 10)
+        e
+    else if (levelOfDetail is "neighbourhoodCode")
+      answer = answers.find((a) -> a.question is question)
+      groupedAnswers = answer.data.groupBy((d) -> d.neighbourhood)
+      Object.keys(groupedAnswers).map (neighbourhood) ->
+        neighbourhoodData = neighbourhoods.find((e) -> e.name.toLowerCase().replace("-", " ") is neighbourhood.toLowerCase().replace("-", " "))
+        if (not neighbourhoodData?)
+          console.log neighbourhood
+        sum = groupedAnswers[neighbourhood]
+        console.log neighbourhoodData?.id
+
+      groupedResult = entries
+      .filter (e) ->
+        e.age >= ageGroup.min and e.age <= ageGroup.max
+      .groupBy (e) -> e.neighbourhoodCode
+      calculatedResult = Object.keys(groupedResult).map (nCode) ->
+        nb = neighbourhoods.find((e) -> e.id is "0193#{nCode}0")
+        name: nb.name
+        polygon: nb.polygon
+        count: groupedResult[nCode].length
+      sortedResult = calculatedResult.sort (a, b) -> a.count - b.count
+      sortedResult.map (e, idx) ->
+        e.level = Math.floor(idx / sortedResult.length * 10)
+        e
 
   getGroupedData: (elderTop, elderBot, youthTop, youthBot, lPer, groupByCondition = "neighbourhoodCode") ->
     neighbourhoodGroups = entries.groupBy (e) ->

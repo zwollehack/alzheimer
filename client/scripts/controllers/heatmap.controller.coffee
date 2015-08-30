@@ -21,13 +21,14 @@ app.controller "HeatMapCtrl",
             result.forEach (record) ->
               houseData.push { location:new google.maps.LatLng( record.lat, record.lng ), weight: 0.5 }
             heatmap = new google.maps.visualization.HeatmapLayer { data: pointArray, map: map, radius: 15 }
-          , 
+          ,
           (error) ->
             console.log(error)
         )
       return
 
     $scope.heatLayerCallback = (layer) ->
+      console.log(1231231)
       layer = layer
       #set the heat layers backend data
       return
