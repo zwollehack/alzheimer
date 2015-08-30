@@ -151,45 +151,41 @@ Meteor.methods
       e
 
   getIndividualData: ->
-    console.log "X"
-    people = groupedData.flatMap ((s) -> s.people)
+    console.log "Started questionary matching"
+    people2 = groupedData.flatMap ((s) -> s.people)
+    people = people2.slice(0, 2000)
+    console.log people2.length
     anwsers = JSON.parse(Assets.getText("questionary.json"))
     filteredPeople = people.map (e) ->
 
       anwsers2 = anwsers.filter((f) -> f.postalCode is e.postalCode)
       anwser = anwsers2[0]
-      console.log "AAA", anwser
       wth = 0
       nh = 0
 
       if(anwser?)
+
         Object.keys(anwser).forEach (a) ->
-          console.log 5, a
           if (a is 1)
-            console.log 4, a
-            wth++
+            wth = wth + 1
           else if (a is 2)
-            console.log 6, a
-            nh++
-          console.log 2, a
+            nh = nh + 1
+
         weight = 0
 
         if (nh > wth)
           weight = 10
-        else if( nh < wth)
+        else if(nh < wth)
           weight = 1
-
-        console.log 3
-        if (weight > 0)
-          lat: e.latitude
-          lng: e.longitude
-          count: weight
+        else
+          weight = 0
+          
+        {lat: e.lat
+        lng: e.lng
+        count: weight}
       else
         null
 
     console.log "Finished questionary matching"
 
-    x = filteredPeople.filter (fp) ->
-      fp is not null
-
-    x
+    filteredPeople
