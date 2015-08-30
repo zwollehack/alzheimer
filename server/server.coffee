@@ -156,8 +156,8 @@ Meteor.methods
     people = people2.slice(0, 2000)
     console.log people2.length
     anwsers = JSON.parse(Assets.getText("questionary.json"))
-    filteredPeople = people.map (e) ->
-
+    filteredPeople = people
+    .map (e) ->
       anwsers2 = anwsers.filter((f) -> f.postalCode is e.postalCode)
       anwser = anwsers2[0]
       wth = 0
@@ -167,9 +167,9 @@ Meteor.methods
 
         Object.keys(anwser).forEach (a) ->
           if (a is 1)
-            wth = wth + 1
+            wth+=1
           else if (a is 2)
-            nh = nh + 1
+            nh+=1
 
         weight = 0
 
@@ -177,14 +177,15 @@ Meteor.methods
           weight = 10
         else if(nh < wth)
           weight = 1
-        else
-          weight = 0
-          
-        {lat: e.lat
+
+        include: true
+        lat: e.lat
         lng: e.lng
-        count: weight}
+        count: weight
+        
       else
-        null
+        include: false
+    .filter (e) -> e.include
 
     console.log "Finished questionary matching"
 
