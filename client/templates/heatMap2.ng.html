@@ -31,9 +31,9 @@
             </select>
             <label for="answers">Answers</label>
             <select id="answers" ng-model="questionValues" multiple>
-              <option ng-repeat="answer in answers" value="{{answer}}">{{answer}}</option>
+              <option ng-repeat="answer in answers | orderBy" value="{{answer}}">{{answer}}</option>
             </select>
-        </div>        
+        </div>
       </form>
     </div>
   </div>
