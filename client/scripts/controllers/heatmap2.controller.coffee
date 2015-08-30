@@ -174,11 +174,10 @@ app.controller "HeatMapCtrl2",
       $timeout(->
         if(handle)
           $scope.ageGroup.max = values[handle]
-
         else
           $scope.ageGroup.min = values[handle]
         $scope.updateHeatmap()
-       , 250 )
+       )
 
 
     $scope.$watch("ageGroup", $scope.updateHeatmap)
