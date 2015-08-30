@@ -1,10 +1,11 @@
 app.controller "HomeCtrl",
   ["$scope", "$state",  "$interval", "$window", "$meteor", "_util",
   ($scope, $state, $interval,  $window, $meteor, _util) ->
+    console.log "HOME"
     $meteor
-    .call("getGroupedData", 80, 40, 40, 16, 60)
+    .call("getIndividualData")
     .then((result) ->
-      console.log "XXX", result
+      console.log "YYY"
     , (error) ->
       console.log(error)
     )
