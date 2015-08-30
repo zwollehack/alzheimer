@@ -108,7 +108,6 @@ app.controller "HeatMapCtrl3",
         $meteor
         .call("getGroupedData", $scope.elderMax, $scope.elderMin, $scope.youngMax, $scope.youngMin, $scope.percentage)
         .then((result) ->
-          console.log result
           $scope.polys = result.map (r, idx) ->
             id: idx
             stroke: {weight: 1, color: "#222222", opacity: 0.1},
@@ -121,10 +120,7 @@ app.controller "HeatMapCtrl3",
         .call("getIndividualData")
         .then((result) ->
           $scope.heatMapData = [];
-          console.log "individual"
-          console.log result
           result.forEach (record) ->
-            console.log record
             $scope.heatMapData.push({location: new google.maps.LatLng(record.lat, record.lng), weight: record.count})
           heatmap.setData $scope.heatMapData
           heatmap.setMap map

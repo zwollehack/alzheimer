@@ -155,7 +155,6 @@ Meteor.methods
     console.log "Started questionary matching"
     people2 = groupedData.flatMap ((s) -> s.people)
     people = people2.slice(0, 7000)
-    console.log people2.length
     anwsers = JSON.parse(Assets.getText("questionary.json"))
     filteredPeople = people
     .map (e) ->
