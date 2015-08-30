@@ -122,7 +122,7 @@ app.controller "HeatMapCtrl2",
       updateTimeout = $timeout(->
         $scope.polys = []
         $meteor
-        .call("getUserData", $scope.levelOfDetail.value, $scope.ageGroup)
+        .call("getUserData", $scope.levelOfDetail.value, $scope.ageGroup, "VR1 - Wilt u Zwolle als geheel beoordelen met een rapportcijfer (van 1 tot en met 10)?")
         .then((result) ->
           console.log result
           if ($scope.levelOfDetail.value is "single")
