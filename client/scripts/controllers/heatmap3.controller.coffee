@@ -2,9 +2,13 @@ app.controller "HeatMapCtrl3",
   ["$scope", "$state",  "$interval", "$timeout", "$window", "$meteor", "_util", "uiGmapGoogleMapApi", "uiGmapIsReady",
   ($scope, $state, $interval, $timeout, $window, $meteor, _util, uiGmapGoogleMapApi, uiGmapIsReady) ->
     map = undefined
+    heatmap = undefined
+    $scope.heatMapData = [];
     uiGmapIsReady.promise(1).then (instances) ->
       instances.forEach (inst) ->
         map = inst.map
+        heatmap = new (google.maps.visualization.HeatmapLayer)(data: $scope.heatMapData)
+        heatmap.setMap map
         # MockHeatLayer layer
     layer = undefined
 
@@ -102,15 +106,22 @@ app.controller "HeatMapCtrl3",
 
       updateTimeout = $timeout(->
         $meteor
+        .call("getIndividualData")
+        .then((result) ->
+          $scope.heatMapData = [];
+          console.log "individual"
+          console.log result
+          result.forEach (record) ->
+            console.log record
+            $scope.heatMapData.push({location: new google.maps.LatLng(record.lat, record.lng), weight: record.count})
+          heatmap.setData $scope.heatMapData
+          heatmap.setMap map
+          heatmap.set 'radius', 20
+        )
+        $meteor
         .call("getGroupedData", $scope.elderMax, $scope.elderMin, $scope.youngMax, $scope.youngMin, $scope.percentage)
         .then((result) ->
           console.log result
-          # result.forEach (record) ->
-          #   houseData.push({location: new google.maps.LatLng(record.lat, record.lng), weight: record.count})
-          # heatmap = new (google.maps.visualization.HeatmapLayer)(data: pointArray)
-          # heatmap.setMap map
-          # heatmap.set 'radius', 20
-
           $scope.polys = result.map (r, idx) ->
             id: idx
             stroke: {weight: 1, color: "#222222", opacity: 0.1},
