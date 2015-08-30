@@ -137,6 +137,8 @@ app.controller "HeatMapCtrl2",
             $scope.showHeat = true
             result.forEach (r) ->
               $scope.heatMapData.push({location: new google.maps.LatLng(r.lat, r.lng), weight: r.count})
+            heatmap.setData $scope.heatMapData
+            heatmap.setMap map
           else if ($scope.levelOfDetail.value is "neighbourhoodCode")
             $scope.showHeat = false
             $scope.polys = result.map (r, idx) ->
@@ -144,8 +146,7 @@ app.controller "HeatMapCtrl2",
               stroke: {weight: 1, color: "#222222", opacity: 0.1},
               fill: {color: colors[r.level], opacity: 0.7},
               path: r.polygon
-          heatmap.setData $scope.heatMapData
-          heatmap.setMap map
+
         , (error) ->
           console.log(error)
         )
@@ -177,7 +178,7 @@ app.controller "HeatMapCtrl2",
         else
           $scope.ageGroup.min = values[handle]
         $scope.updateHeatmap()
-      )
+       , 250 )
 
 
     $scope.$watch("ageGroup", $scope.updateHeatmap)
