@@ -80,22 +80,29 @@ Meteor.methods
     else if (levelOfDetail is "neighbourhoodCode")
       answer = answers.find((a) -> a.question is question)
       groupedAnswers = answer.data.groupBy((d) -> d.neighbourhood)
-      Object.keys(groupedAnswers).map (neighbourhood) ->
+      groupedAnswerValues = Object.keys(groupedAnswers).map (neighbourhood) ->
         neighbourhoodData = neighbourhoods.find((e) -> e.name.toLowerCase().replace("-", " ") is neighbourhood.toLowerCase().replace("-", " "))
         if (not neighbourhoodData?)
           console.log neighbourhood
-        sum = groupedAnswers[neighbourhood]
-        console.log neighbourhoodData?.id
+        sum = groupedAnswers[neighbourhood].reduce(((sum, e) -> sum + e.answerValue), 0)
+        average = sum / groupedAnswers[neighbourhood].length
+
+        id: neighbourhoodData.id
+        count: groupedAnswers[neighbourhood].length
+        average: average
 
       groupedResult = entries
       .filter (e) ->
         e.age >= ageGroup.min and e.age <= ageGroup.max
       .groupBy (e) -> e.neighbourhoodCode
       calculatedResult = Object.keys(groupedResult).map (nCode) ->
-        nb = neighbourhoods.find((e) -> e.id is "0193#{nCode}0")
-        name: nb.name
-        polygon: nb.polygon
-        count: groupedResult[nCode].length
+        neighbourhoodData = neighbourhoods.find((e) -> e.id is "0193#{nCode}0")
+        answerData = groupedAnswerValues.find((e) -> e.id is neighbourhoodData.id)
+        value = groupedResult[nCode].length * if (answerData?) then answerData.average else 0
+
+        name: neighbourhoodData.name
+        polygon: neighbourhoodData.polygon
+        count: value
       sortedResult = calculatedResult.sort (a, b) -> a.count - b.count
       sortedResult.map (e, idx) ->
         e.level = Math.floor(idx / sortedResult.length * 10)
