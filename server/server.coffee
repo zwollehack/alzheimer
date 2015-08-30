@@ -29,11 +29,15 @@ entries = []
 neighbourhoods = []
 groupedData = []
 answers = []
+questionsMeta = []
 
 Meteor.startup ->
   entries = JSON.parse(Assets.getText("entries.json"))
   console.log("Loaded #{entries.length} entries for users")
   answers = JSON.parse(Assets.getText("answers.json"))
+  questionsMeta = answers.map (a) ->
+    name: a.question
+    values: a.answers
   console.log("Loaded #{answers.length} answers for users")
   neighbourhoods = JSON.parse(Assets.getText("bu_2014.json")).features.map (f) ->
     id: f.properties["BU_2014"]
@@ -44,6 +48,10 @@ Meteor.startup ->
   console.log("Loaded #{neighbourhoods.length} entries for neighbourhoods")
 
 Meteor.methods
+  getQuestionMeta: ->
+    console.log questionsMeta
+    questionsMeta
+
   getUserData: (levelOfDetail, ageGroup, question = "none") ->
     minLat = 180
     maxLat = 0

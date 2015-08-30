@@ -182,4 +182,12 @@ app.controller "HeatMapCtrl2",
 
     $scope.$watch("ageGroup", $scope.updateHeatmap)
     $scope.$watch("levelOfDetail", $scope.updateHeatmap)
+
+    $meteor
+    .call("getQuestionMeta")
+    .then((result) ->
+      $scope.questions = result
+    , (error) ->
+      console.log(error)
+    )
  ]
