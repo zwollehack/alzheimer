@@ -12,37 +12,6 @@ app.controller "HeatMapCtrl2",
 
     colors = ['rgb(255,255,204)','rgb(255,237,160)','rgb(254,217,118)','rgb(254,178,76)','rgb(253,141,60)','rgb(252,78,42)','rgb(227,26,28)','rgb(189,0,38)','rgb(128,0,38)']
 
-    # MockHeatLayer = (heatLayer) ->
-    #   pointarray = undefined
-    #   houseData = []
-    #   # pointArray = new (google.maps.MVCArray)(houseData)
-    #   #heatLayer.setData(pointArray);
-    #   $meteor
-    #   .call("getUserData")
-    #   .then((result) ->
-    #     console.log result
-    #     # result.forEach (record) ->
-    #     #   houseData.push({location: new google.maps.LatLng(record.lat, record.lng), weight: record.count})
-    #     # heatmap = new (google.maps.visualization.HeatmapLayer)(data: pointArray)
-    #     # heatmap.setMap map
-    #     # heatmap.set 'radius', 20
-    #     $scope.polys = result.map (r, idx) ->
-    #       id: idx
-    #       clickable: true,
-    #       draggable: false,
-    #       editable: false,
-    #       visible: true,
-    #       geodesic: false,
-    #       stroke: {weight: 1, color: "#000080", opacity: 0.1},
-    #       fill: {color: "#FFCE00", opacity: 0.3},
-    #       path: r.polygon
-    #     console.log $scope.polys
-    #   , (error) ->
-    #     console.log(error)
-    #   )
-
-
-
     $scope.heatLayerCallback = (layer) ->
       layer = layer
       #set the heat layers backend data
@@ -113,7 +82,6 @@ app.controller "HeatMapCtrl2",
         "Weet niet / geen mening"
         "Gelijk gebleven"
         "Vooruit gegaan"
-        "Weet niet / geen mening"
       ]
     ]
     $scope.questionName = "VR2 - Vindt u dat Zwolle de afgelopen 12 maanden vooruit of achteruit is gegaan?"
@@ -184,10 +152,21 @@ app.controller "HeatMapCtrl2",
     $scope.$watch("levelOfDetail", $scope.updateHeatmap)
 
     $meteor
-    .call("getQuestionMeta")
-    .then((result) ->
-      $scope.questions = result
-    , (error) ->
-      console.log(error)
-    )
+      .call( "getQuestionMeta" )
+      .then(
+        (result) ->
+          $scope.questions = result
+        , 
+        (error) ->
+          console.log(error)
+      )
+ 
+    $scope.questionChange = -> 
+      $scope.answers = []
+      $scope.questions.forEach (question) ->
+        if( question.name == $scope.questionName )
+          $scope.answers = question.values
+        return
+      return
+    
  ]
