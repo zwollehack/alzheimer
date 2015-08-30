@@ -1,0 +1,23 @@
+<div class="left">
+  <ui-gmap-google-map id="supplierMap" center="map.center" zoom="map.zoom" options="map.options">
+      <ui-gmap-layer id="maps" namespace="visualization" type="HeatmapLayer" show="showHeat" onCreated="heatLayerCallback"></ui-gmap-layer>
+      <ui-gmap-polygon
+              ng-repeat="poly in polys"
+              path="poly.path"
+              fill="poly.fill">
+      </ui-gmap-polygon>
+  </ui-gmap-google-map>
+</div>
+<div class="right">
+  <div class="container-fluid">
+    <div class="row">
+      <form>
+        <div class="form-group">
+          <label for="ageGroup">Age Group</label>
+            <select id="ageGroup" ng-model="ageGroup" ng-options="i.name for i in ageGroups">
+            </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
