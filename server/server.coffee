@@ -153,7 +153,7 @@ Meteor.methods
   getIndividualData: ->
     console.log "Started questionary matching"
     people2 = groupedData.flatMap ((s) -> s.people)
-    people = people2.slice(0, 2000)
+    people = people2.slice(0, 7000)
     console.log people2.length
     anwsers = JSON.parse(Assets.getText("questionary.json"))
     filteredPeople = people
@@ -167,9 +167,9 @@ Meteor.methods
 
         Object.keys(anwser).forEach (a) ->
           if (a is 1)
-            wth+=1
+            wth = wth + 1
           else if (a is 2)
-            nh+=1
+            nh = nh + 1
 
         weight = 0
 
@@ -177,12 +177,13 @@ Meteor.methods
           weight = 10
         else if(nh < wth)
           weight = 1
-
+        else
+          weight = 0
+          
         include: true
         lat: e.lat
         lng: e.lng
         count: weight
-        
       else
         include: false
     .filter (e) -> e.include

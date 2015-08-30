@@ -106,6 +106,18 @@ app.controller "HeatMapCtrl3",
 
       updateTimeout = $timeout(->
         $meteor
+        .call("getGroupedData", $scope.elderMax, $scope.elderMin, $scope.youngMax, $scope.youngMin, $scope.percentage)
+        .then((result) ->
+          console.log result
+          $scope.polys = result.map (r, idx) ->
+            id: idx
+            stroke: {weight: 1, color: "#222222", opacity: 0.1},
+            fill: {color: colors[r.level], opacity: 0.3},
+            path: r.polygon
+        , (error) ->
+          console.log(error)
+        )
+        $meteor
         .call("getIndividualData")
         .then((result) ->
           $scope.heatMapData = [];
@@ -117,18 +129,6 @@ app.controller "HeatMapCtrl3",
           heatmap.setData $scope.heatMapData
           heatmap.setMap map
           heatmap.set 'radius', 20
-        )
-        $meteor
-        .call("getGroupedData", $scope.elderMax, $scope.elderMin, $scope.youngMax, $scope.youngMin, $scope.percentage)
-        .then((result) ->
-          console.log result
-          $scope.polys = result.map (r, idx) ->
-            id: idx
-            stroke: {weight: 1, color: "#222222", opacity: 0.1},
-            fill: {color: colors[r.level], opacity: 0.7},
-            path: r.polygon
-        , (error) ->
-          console.log(error)
         )
       , 250)
 

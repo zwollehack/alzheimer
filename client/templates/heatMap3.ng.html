@@ -1,11 +1,11 @@
 <div class="left">
   <ui-gmap-google-map id="supplierMap" center="map.center" zoom="map.zoom" options="map.options">
-      <ui-gmap-layer id="maps" namespace="visualization" type="HeatmapLayer" show="showHeat" onCreated="heatLayerCallback"></ui-gmap-layer>
       <ui-gmap-polygon
               ng-repeat="poly in polys"
               path="poly.path"
               fill="poly.fill">
       </ui-gmap-polygon>
+      <ui-gmap-layer id="maps" namespace="visualization" type="HeatmapLayer" show="showHeat" onCreated="heatLayerCallback"></ui-gmap-layer>
   </ui-gmap-google-map>
 </div>
 <div class="right">
