@@ -25,13 +25,19 @@ doMeteorSync = (url) ->
   response = Meteor.wrapAsync(doMeteor)(url)
   JSON.parse(response)
 
-
 entries = []
+neighbourhoods = []
 
 Meteor.startup ->
   entries = JSON.parse(Assets.getText("entries.json"))
-  console.log("Loaded #{entries.length} entries for database")
-
+  console.log("Loaded #{entries.length} entries for users")
+  neighbourhoods = JSON.parse(Assets.getText("bu_2014.json")).features.map (f) ->
+    id: f.properties["BU_2014"]
+    name: f.properties["BU_NAAM"]
+    polygon: f.geometry.coordinates[0].map ([x, y]) ->
+      latitude: y
+      longitude: x
+  console.log("Loaded #{neighbourhoods.length} entries for neighbourhoods")
 
 Meteor.methods
   getUserData: ->
@@ -46,7 +52,9 @@ Meteor.methods
       maxLng = Math.max(e.lng, maxLng)
 
 
-
-    entries.map (e) ->
-      lat: e.lat
-      lng: e.lng
+    x = entries.groupBy (e) -> e.neighbourhoodCode
+    Object.keys(x).map (nCode) ->
+      nb = neighbourhoods.find((e) -> e.id is "0193#{nCode}0")
+      name: nb.name
+      polygon: nb.polygon
+      count: x[nCode].length
