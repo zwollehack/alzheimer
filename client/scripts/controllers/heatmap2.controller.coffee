@@ -41,19 +41,9 @@ app.controller "HeatMapCtrl2",
     uiGmapGoogleMapApi.then (maps) ->
       map = maps
 
-    $scope.questions = [
-      name: "VR1 - Wilt u Zwolle als geheel beoordelen met een rapportcijfer (van 1 tot en met 10)?"
-      values: ["0", "1", "2", "3", "4"]
-    ,
-      name: "VR2 - Vindt u dat Zwolle de afgelopen 12 maanden vooruit of achteruit is gegaan?"
-      values: [
-        "Weet niet / geen mening"
-        "Gelijk gebleven"
-        "Vooruit gegaan"
-      ]
-    ]
-    $scope.questionName = "VR2 - Vindt u dat Zwolle de afgelopen 12 maanden vooruit of achteruit is gegaan?"
-    $scope.questionValue = ["Vooruit gegaan", "Vooruit gegaan"]
+    $scope.questions = []
+    $scope.questionName = null
+    $scope.questionValues = []
 
     $scope.heatMapData = []
 
@@ -67,7 +57,7 @@ app.controller "HeatMapCtrl2",
         $scope.polys = []
         $scope.heatMapData = [];
         $meteor
-        .call("getUserData", $scope.levelOfDetail.value, $scope.ageGroup, "VR1 - Wilt u Zwolle als geheel beoordelen met een rapportcijfer (van 1 tot en met 10)?")
+        .call("getUserData", $scope.levelOfDetail.value, $scope.ageGroup, $scope.questionName, $scope.questionValues )
         .then((result) ->
           if ($scope.levelOfDetail.value is "single")
             $scope.showHeat = true
@@ -124,6 +114,8 @@ app.controller "HeatMapCtrl2",
       .then(
         (result) ->
           $scope.questions = result
+          $scope.questionName = $scope.questions[0].name
+          $scope.questionChange()
         , 
         (error) ->
           console.log(error)
@@ -134,7 +126,10 @@ app.controller "HeatMapCtrl2",
       $scope.questions.forEach (question) ->
         if( question.name == $scope.questionName )
           $scope.answers = question.values
-        return
-      return
+          $scope.questionValues = question.values
+
+    $scope.$watch("questionName", $scope.updateHeatmap)
+    $scope.$watch("questionValues", $scope.updateHeatmap)
+
     
  ]
