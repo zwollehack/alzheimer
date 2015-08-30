@@ -10,7 +10,7 @@ app.controller "HeatMapCtrl2",
         heatmap.setMap map
     layer = undefined
 
-    colors = ['rgb(255,255,204)','rgb(255,237,160)','rgb(254,217,118)','rgb(254,178,76)','rgb(253,141,60)','rgb(252,78,42)','rgb(227,26,28)','rgb(189,0,38)','rgb(128,0,38)']
+    colors = ['rgb(247,251,255)','rgb(222,235,247)','rgb(198,219,239)','rgb(158,202,225)','rgb(107,174,214)','rgb(66,146,198)','rgb(33,113,181)','rgb(8,81,156)','rgb(8,48,107)']
 
     # MockHeatLayer = (heatLayer) ->
     #   pointarray = undefined
@@ -104,20 +104,9 @@ app.controller "HeatMapCtrl2",
     uiGmapGoogleMapApi.then (maps) ->
       map = maps
 
-    $scope.questions = [
-      name: "VR1 - Wilt u Zwolle als geheel beoordelen met een rapportcijfer (van 1 tot en met 10)?"
-      values: ["0", "1", "2", "3", "4"]
-    ,
-      name: "VR2 - Vindt u dat Zwolle de afgelopen 12 maanden vooruit of achteruit is gegaan?"
-      values: [
-        "Weet niet / geen mening"
-        "Gelijk gebleven"
-        "Vooruit gegaan"
-        "Weet niet / geen mening"
-      ]
-    ]
-    $scope.questionName = "VR2 - Vindt u dat Zwolle de afgelopen 12 maanden vooruit of achteruit is gegaan?"
-    $scope.questionValue = ["Vooruit gegaan", "Vooruit gegaan"]
+    $scope.questions = []
+    $scope.questionName = null
+    $scope.questionValues = []
 
     $scope.heatMapData = []
 
@@ -131,7 +120,7 @@ app.controller "HeatMapCtrl2",
         $scope.polys = []
         $scope.heatMapData = [];
         $meteor
-        .call("getIndividualData", $scope.levelOfDetail.value, $scope.ageGroup, "VR1 - Wilt u Zwolle als geheel beoordelen met een rapportcijfer (van 1 tot en met 10)?")
+        .call("getUserData", $scope.levelOfDetail.value, $scope.ageGroup, $scope.questionName, $scope.questionValues )
         .then((result) ->
           if ($scope.levelOfDetail.value is "single")
             $scope.showHeat = true
@@ -184,10 +173,25 @@ app.controller "HeatMapCtrl2",
     $scope.$watch("levelOfDetail", $scope.updateHeatmap)
 
     $meteor
-    .call("getQuestionMeta")
-    .then((result) ->
-      $scope.questions = result
-    , (error) ->
-      console.log(error)
-    )
+      .call( "getQuestionMeta" )
+      .then(
+        (result) ->
+          $scope.questions = result
+          $scope.questionName = $scope.questions[0].name
+          $scope.questionChange()
+        ,
+        (error) ->
+          console.log(error)
+      )
+
+    $scope.questionChange = ->
+      $scope.answers = []
+      $scope.questions.forEach (question) ->
+        if( question.name == $scope.questionName )
+          $scope.answers = question.values
+          $scope.questionValues = question.values
+
+    $scope.$watch("questionName", $scope.updateHeatmap)
+    $scope.$watch("questionValues", $scope.updateHeatmap)
+
  ]
