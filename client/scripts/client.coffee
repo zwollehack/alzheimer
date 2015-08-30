@@ -23,6 +23,10 @@ app.config [
       url: "/heatmap"
       templateUrl: "client/templates/heatMap.ng.html"
       controller: "HeatMapCtrl")
+    $stateProvider.state("heatmap2",
+      url: "/heatmap2"
+      templateUrl: "client/templates/heatMap.ng.html"
+      controller: "HeatMapCtrl2")
     DZ.init({
       appId : '156051',
       channelUrl : 'http://localhost:3000/channel.html'
