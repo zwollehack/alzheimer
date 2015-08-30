@@ -177,7 +177,7 @@ app.controller "HeatMapCtrl2",
         else
           $scope.ageGroup.min = values[handle]
         $scope.updateHeatmap()
-       )
+       ,1000)
 
 
     $scope.$watch("ageGroup", $scope.updateHeatmap)
