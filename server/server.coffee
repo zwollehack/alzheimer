@@ -49,7 +49,6 @@ Meteor.startup ->
 
 Meteor.methods
   getQuestionMeta: ->
-    console.log questionsMeta
     questionsMeta
 
   getUserData: (levelOfDetail, ageGroup, question = "none") ->
