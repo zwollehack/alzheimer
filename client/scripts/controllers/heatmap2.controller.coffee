@@ -1,11 +1,10 @@
 app.controller "HeatMapCtrl2",
-  ["$scope", "$state",  "$interval", "$window", "$meteor", "_util", "uiGmapGoogleMapApi", "uiGmapIsReady",
-  ($scope, $state, $interval,  $window, $meteor, _util, uiGmapGoogleMapApi, uiGmapIsReady) ->
+  ["$scope", "$state",  "$interval", "$timeout", "$window", "$meteor", "_util", "uiGmapGoogleMapApi", "uiGmapIsReady",
+  ($scope, $state, $interval, $timeout, $window, $meteor, _util, uiGmapGoogleMapApi, uiGmapIsReady) ->
     map = undefined
     uiGmapIsReady.promise(1).then (instances) ->
       instances.forEach (inst) ->
         map = inst.map
-        # MockHeatLayer layer
     layer = undefined
 
     colors = ['rgb(255,255,204)','rgb(255,237,160)','rgb(254,217,118)','rgb(254,178,76)','rgb(253,141,60)','rgb(252,78,42)','rgb(227,26,28)','rgb(189,0,38)','rgb(128,0,38)']
@@ -40,6 +39,7 @@ app.controller "HeatMapCtrl2",
     #   )
 
 
+
     $scope.heatLayerCallback = (layer) ->
       layer = layer
       #set the heat layers backend data
@@ -50,7 +50,6 @@ app.controller "HeatMapCtrl2",
         longitude: 6.1069978
       zoom: 11
     $scope.showHeat = true
-    $scope.locationCompanies = []
     $scope.polys = []
     $scope.ageGroups = [
       name: "All"
@@ -86,28 +85,61 @@ app.controller "HeatMapCtrl2",
       max: 200
     ]
     $scope.ageGroup = $scope.ageGroups[0]
+    $scope.levelOfDetails = [
+      name: "Neighbourhood"
+      value: "neighbourhoodCode"
+    ,
+      name: "Individual"
+      value: "single"
+    ]
+    $scope.levelOfDetail = $scope.levelOfDetails[0]
     uiGmapGoogleMapApi.then (maps) ->
       map = maps
 
+    $scope.questions = [
+      name: "VR1 - Wilt u Zwolle als geheel beoordelen met een rapportcijfer (van 1 tot en met 10)?"
+      values: ["0", "1", "2", "3", "4"]
+    ,
+      name: "VR2 - Vindt u dat Zwolle de afgelopen 12 maanden vooruit of achteruit is gegaan?"
+      values: [
+        "Weet niet / geen mening"
+        "Gelijk gebleven"
+        "Vooruit gegaan"
+        "Weet niet / geen mening"
+      ]
+    ]
+    $scope.questionName = "VR2 - Vindt u dat Zwolle de afgelopen 12 maanden vooruit of achteruit is gegaan?"
+    $scope.questionValue = ["Vooruit gegaan", "Vooruit gegaan"]
+
+    $scope.heatMapData = []
+
+    updateTimeout = null
     $scope.updateHeatmap = ->
-      $meteor
-      .call("getUserData", $scope.ageGroup)
-      .then((result) ->
-        console.log result
-        # result.forEach (record) ->
-        #   houseData.push({location: new google.maps.LatLng(record.lat, record.lng), weight: record.count})
-        # heatmap = new (google.maps.visualization.HeatmapLayer)(data: pointArray)
-        # heatmap.setMap map
-        # heatmap.set 'radius', 20
-        $scope.polys = result.map (r, idx) ->
-          id: idx
-          stroke: {weight: 1, color: "#222222", opacity: 0.1},
-          fill: {color: colors[r.level], opacity: 0.7},
-          path: r.polygon
-      , (error) ->
-        console.log(error)
-      )
+      if (updateTimeout?)
+        $timeout.cancel(updateTimeout)
+        updateTimeout = null
+
+      updateTimeout = $timeout(->
+        $scope.polys = []
+        $meteor
+        .call("getUserData", $scope.levelOfDetail.value, $scope.ageGroup)
+        .then((result) ->
+          console.log result
+          if ($scope.levelOfDetail.value is "single")
+            result.splice(0, 100).forEach (r) ->
+              $scope.heatMapData.push({location: new google.maps.LatLng(r.lat, r.lng), weight: r.count})
+          else if ($scope.levelOfDetail.value is "neighbourhoodCode")
+            $scope.polys = result.map (r, idx) ->
+              id: idx
+              stroke: {weight: 1, color: "#222222", opacity: 0.1},
+              fill: {color: colors[r.level], opacity: 0.7},
+              path: r.polygon
+        , (error) ->
+          console.log(error)
+        )
+      , 250)
 
 
     $scope.$watch("ageGroup", $scope.updateHeatmap)
+    $scope.$watch("levelOfDetail", $scope.updateHeatmap)
  ]

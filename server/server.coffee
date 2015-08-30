@@ -40,7 +40,7 @@ Meteor.startup ->
   console.log("Loaded #{neighbourhoods.length} entries for neighbourhoods")
 
 Meteor.methods
-  getUserData: (ageGroup) ->
+  getUserData: (levelOfDetail, ageGroup) ->
     minLat = 180
     maxLat = 0
     minLng = 180
@@ -51,19 +51,25 @@ Meteor.methods
       minLng = Math.min(e.lng, minLng)
       maxLng = Math.max(e.lng, maxLng)
 
-    groupedResult = entries
-    .filter (e) ->
-      e.age >= ageGroup.min and e.age <= ageGroup.max
-    .groupBy (e) -> e.neighbourhoodCode
-    calculatedResult = Object.keys(groupedResult).map (nCode) ->
-      nb = neighbourhoods.find((e) -> e.id is "0193#{nCode}0")
-      name: nb.name
-      polygon: nb.polygon
-      count: groupedResult[nCode].length
-    sortedResult = calculatedResult.sort (a, b) -> a.count - b.count
-    sortedResult.map (e, idx) ->
-      e.level = Math.floor(idx / sortedResult.length * 10)
-      e
+    if (levelOfDetail is "single")
+      entries.map (e) ->
+        lat: e.lat
+        lng: e.lng
+        count: 1
+    else if (levelOfDetail is "neighbourhoodCode")
+      groupedResult = entries
+      .filter (e) ->
+        e.age >= ageGroup.min and e.age <= ageGroup.max
+      .groupBy (e) -> e.neighbourhoodCode
+      calculatedResult = Object.keys(groupedResult).map (nCode) ->
+        nb = neighbourhoods.find((e) -> e.id is "0193#{nCode}0")
+        name: nb.name
+        polygon: nb.polygon
+        count: groupedResult[nCode].length
+      sortedResult = calculatedResult.sort (a, b) -> a.count - b.count
+      sortedResult.map (e, idx) ->
+        e.level = Math.floor(idx / sortedResult.length * 10)
+        e
 
   getGroupedData: (elderTop, elderBot, youthTop, youthBot, lPer, groupByCondition = "neighbourhoodCode") ->
     neighbourhoodGroups = entries.groupBy (e) ->
