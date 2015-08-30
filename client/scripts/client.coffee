@@ -25,7 +25,7 @@ app.config [
       controller: "HeatMapCtrl")
     $stateProvider.state("heatmap2",
       url: "/heatmap2"
-      templateUrl: "client/templates/heatMap.ng.html"
+      templateUrl: "client/templates/heatMap2.ng.html"
       controller: "HeatMapCtrl2")
     DZ.init({
       appId : '156051',

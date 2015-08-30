@@ -40,7 +40,7 @@ Meteor.startup ->
   console.log("Loaded #{neighbourhoods.length} entries for neighbourhoods")
 
 Meteor.methods
-  getUserData: ->
+  getUserData: (ageGroup) ->
     minLat = 180
     maxLat = 0
     minLng = 180
@@ -52,9 +52,16 @@ Meteor.methods
       maxLng = Math.max(e.lng, maxLng)
 
 
-    x = entries.groupBy (e) -> e.neighbourhoodCode
-    Object.keys(x).map (nCode) ->
+    groupedResult = entries
+    .filter (e) ->
+      e.age >= ageGroup.min and e.age <= ageGroup.max
+    .groupBy (e) -> e.neighbourhoodCode
+    calculatedResult = Object.keys(groupedResult).map (nCode) ->
       nb = neighbourhoods.find((e) -> e.id is "0193#{nCode}0")
       name: nb.name
       polygon: nb.polygon
-      count: x[nCode].length
+      count: groupedResult[nCode].length
+    sortedResult = calculatedResult.sort (a, b) -> a.count - b.count
+    sortedResult.map (e, idx) ->
+      e.level = Math.floor(idx / sortedResult.length * 10)
+      e
