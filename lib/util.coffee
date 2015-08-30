@@ -31,6 +31,27 @@ Array::groupBy = (fn) ->
       groups
     , []])
 
+###
+Array::find
+@param  Function       fn  Function to execute on each value in the array.
+@return Any|undefined      The array element if found, otherwise undefined.
+###
+Array::find ?= (fn) ->
+  throw new TypeError("Array.prototype.find called on null or undefined")  unless this?
+  throw new TypeError()  if typeof fn isnt "function"
+
+  t = Object(this)
+  len = t.length >>> 0
+  thisArg = (if arguments.length >= 2 then arguments[1] else undefined)
+  i = 0
+
+  while i < len
+    if i of t
+      val = t[i]
+
+      return val  if fn.call(thisArg, val, i, t)
+    i++
+  return
 
 @util =
   str:
