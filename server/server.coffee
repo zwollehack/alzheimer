@@ -95,7 +95,7 @@ Meteor.methods
       nb = neighbourhoods.find((b) -> b.id is "0193#{e.code}0")
       name: nb.name
       polygon: nb.polygon
-      count: x[e.code].length
+      count: neighbourhoods[e.code]?.length
 
     sortedResult.map (e, idx) ->
       e.level = Math.floor(idx / sortedResult.length * 10)

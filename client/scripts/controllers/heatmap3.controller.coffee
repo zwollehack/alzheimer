@@ -91,7 +91,7 @@ app.controller "HeatMapCtrl3",
 
     $scope.updateHeatmap = ->
       $meteor
-      .call("getUserData", $scope.ageGroup)
+      .call("getGroupedData", 80, 40, 40, 16, 60)
       .then((result) ->
         console.log result
         # result.forEach (record) ->
