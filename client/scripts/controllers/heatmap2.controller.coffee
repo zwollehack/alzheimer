@@ -46,9 +46,15 @@ app.controller "HeatMapCtrl2",
 
     $scope.map =
       center:
-        latitude: 52.5142306
-        longitude: 6.1069978
-      zoom: 11
+        latitude: 52.5125000
+        longitude: 6.094440
+      zoom: 12
+      options:
+        disableDefaultUI: true
+        zoomControl: true
+        zoomControlOptions:
+          style: google.maps.ZoomControlStyle.SMALL
+
     $scope.showHeat = true
     $scope.polys = []
     $scope.ageGroups = [
@@ -127,7 +133,7 @@ app.controller "HeatMapCtrl2",
           console.log result
           if ($scope.levelOfDetail.value is "single")
             result.splice(0, 100).forEach (r) ->
-              $scope.heatMapData.push({location: new google.maps.LatLng(r.lat, r.lng), weight: r.count})
+              $scope.heatMapData.push({location: new google.maps.LatLng(r.lng, r.lat), weight: r.count})
           else if ($scope.levelOfDetail.value is "neighbourhoodCode")
             $scope.polys = result.map (r, idx) ->
               id: idx
