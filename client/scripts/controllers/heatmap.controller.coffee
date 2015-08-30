@@ -40,8 +40,8 @@ app.controller "HeatMapCtrl",
       options: {
         disableDefaultUI: true
         zoomControl: true
-        zoomControlOptions: { 
-          style: google.maps.ZoomControlStyle.SMALL 
+        zoomControlOptions: {
+          style: google.maps.ZoomControlStyle.SMALL
         }
       }
     $scope.showHeat = true

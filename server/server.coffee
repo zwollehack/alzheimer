@@ -51,10 +51,41 @@ Meteor.methods
       minLng = Math.min(e.lng, minLng)
       maxLng = Math.max(e.lng, maxLng)
 
-
     x = entries.groupBy (e) -> e.neighbourhoodCode
     Object.keys(x).map (nCode) ->
       nb = neighbourhoods.find((e) -> e.id is "0193#{nCode}0")
       name: nb.name
       polygon: nb.polygon
       count: x[nCode].length
+
+  getGroupedData: (elderTop, elderBot, youthTop, youthBot, lPer, groupByCondition = "neighbourhoodCode") ->
+    neighbourhoodGroups = entries.groupBy (e) ->
+      e.neighbourhoodCode
+
+    neighbourhoodGroupsWithInfo = Object.keys(neighbourhoodGroups).map (e) ->
+      o = neighbourhoodGroups[e].filter (b) ->
+        b.age < elderTop and b.age > elderBot
+
+      y = neighbourhoodGroups[e].filter (c) ->
+        c.age < youthTop and c.age > youthBot
+
+      total = o.length + y.length
+      oper = (o.length * 100) / total
+      yper = (y.length * 100) / total
+
+      code: e
+      people: neighbourhoodGroups[e]
+      youthPercentage: yper
+      elderPercentage: oper
+
+    matchingGroups = neighbourhoodGroupsWithInfo.filter (e) ->
+      e.youthPercentage <= lPer
+
+    sortedMatchingGroups = matchingGroups.sort (a, b) ->
+      a.youthPercentage - b.youthPercentage
+
+    sortedMatchingGroups.map (e) ->
+      nb = neighbourhoods.find((b) -> b.id is "0193#{e.code}0")
+      name: nb.name
+      polygon: nb.polygon
+      count: x[e.code].length
