@@ -135,8 +135,10 @@ app.controller "HeatMapCtrl2",
         .then((result) ->
           if ($scope.levelOfDetail.value is "single")
             $scope.showHeat = true
-            result.splice(0, 1000).forEach (r) ->
+            result.forEach (r) ->
               $scope.heatMapData.push({location: new google.maps.LatLng(r.lat, r.lng), weight: r.count})
+            heatmap.setData $scope.heatMapData
+            heatmap.setMap map
           else if ($scope.levelOfDetail.value is "neighbourhoodCode")
             $scope.showHeat = false
             $scope.polys = result.map (r, idx) ->
@@ -144,12 +146,38 @@ app.controller "HeatMapCtrl2",
               stroke: {weight: 1, color: "#222222", opacity: 0.1},
               fill: {color: colors[r.level], opacity: 0.7},
               path: r.polygon
-          heatmap.setData $scope.heatMapData
-          heatmap.setMap map
+
         , (error) ->
           console.log(error)
         )
       , 250)
+    slider = document.getElementById('range')
+    noUiSlider.create(slider, {
+      range: 'range_all_sliders'
+      start: [ $scope.ageGroup.min, $scope.ageGroup.max]
+      connect: true
+      step: 1
+      margin: 5
+      direction: 'ltr'
+      orientation: 'horizontal'
+      behaviour: 'tap-drag'
+      range: {
+        'min': 0
+        'max': 105
+      }
+      pips: {
+        mode: 'range'
+        density: 3
+      }
+    })
+    slider.noUiSlider.on 'update', (values, handle) ->
+      $timeout(->
+        if(handle)
+          $scope.ageGroup.max = values[handle]
+        else
+          $scope.ageGroup.min = values[handle]
+        $scope.updateHeatmap()
+       )
 
 
     $scope.$watch("ageGroup", $scope.updateHeatmap)

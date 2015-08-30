@@ -27,6 +27,7 @@ doMeteorSync = (url) ->
 
 entries = []
 neighbourhoods = []
+groupedData = []
 answers = []
 
 Meteor.startup ->
@@ -130,10 +131,9 @@ Meteor.methods
     matchingGroups = neighbourhoodGroupsWithInfo.filter (e) ->
       e.youthPercentage <= lPer
 
-    sortedMatchingGroups = matchingGroups.sort (a, b) ->
-      a.youthPercentage - b.youthPercentage
+    groupedData = matchingGroups
 
-    sortedResult = sortedMatchingGroups.map (e) ->
+    sortedResult = matchingGroups.map (e) ->
       nb = neighbourhoods.find((b) -> b.id is "0193#{e.code}0")
       name: nb.name
       polygon: nb.polygon
@@ -143,3 +143,46 @@ Meteor.methods
       e.level = Math.floor(idx / sortedResult.length * 10)
       e
 
+  getIndividualData: ->
+    console.log "X"
+    people = groupedData.flatMap ((s) -> s.people)
+    anwsers = JSON.parse(Assets.getText("questionary.json"))
+    filteredPeople = people.map (e) ->
+
+      anwsers2 = anwsers.filter((f) -> f.postalCode is e.postalCode)
+      anwser = anwsers2[0]
+      console.log "AAA", anwser
+      wth = 0
+      nh = 0
+
+      if(anwser?)
+        Object.keys(anwser).forEach (a) ->
+          console.log 5, a
+          if (a is 1)
+            console.log 4, a
+            wth++
+          else if (a is 2)
+            console.log 6, a
+            nh++
+          console.log 2, a
+        weight = 0
+
+        if (nh > wth)
+          weight = 10
+        else if( nh < wth)
+          weight = 1
+
+        console.log 3
+        if (weight > 0)
+          lat: e.latitude
+          lng: e.longitude
+          count: weight
+      else
+        null
+
+    console.log "Finished questionary matching"
+
+    x = filteredPeople.filter (fp) ->
+      fp is not null
+
+    x
