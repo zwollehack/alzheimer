@@ -12,7 +12,7 @@ app.controller "HeatMapCtrl3",
         # MockHeatLayer layer
     layer = undefined
 
-    colors = ['rgb(255,255,204)','rgb(255,237,160)','rgb(254,217,118)','rgb(254,178,76)','rgb(253,141,60)','rgb(252,78,42)','rgb(227,26,28)','rgb(189,0,38)','rgb(128,0,38)']
+    colors = ['rgb(247,251,255)','rgb(222,235,247)','rgb(198,219,239)','rgb(158,202,225)','rgb(107,174,214)','rgb(66,146,198)','rgb(33,113,181)','rgb(8,81,156)','rgb(8,48,107)']
 
     # MockHeatLayer = (heatLayer) ->
     #   pointarray = undefined
