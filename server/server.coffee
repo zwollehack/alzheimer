@@ -51,7 +51,7 @@ Meteor.methods
   getQuestionMeta: ->
     questionsMeta
 
-  getUserData: (levelOfDetail, ageGroup, question = "none") ->
+  getUserData: (levelOfDetail, ageGroup, question = "none", questionValues = []) ->
     minLat = 180
     maxLat = 0
     minLng = 180
@@ -91,8 +91,9 @@ Meteor.methods
         neighbourhoodData = neighbourhoods.find((e) -> e.name.toLowerCase().replace("-", " ") is neighbourhood.toLowerCase().replace("-", " "))
         if (not neighbourhoodData?)
           console.log neighbourhood
-        sum = groupedAnswers[neighbourhood].reduce(((sum, e) -> sum + e.answerValue), 0)
-        average = sum / groupedAnswers[neighbourhood].length
+        data = groupedAnswers[neighbourhood]
+        sum = data.reduce(((sum, e) -> sum + e.answerValue), 0)
+        average = sum / data.length
 
         id: neighbourhoodData.id
         count: groupedAnswers[neighbourhood].length
@@ -105,7 +106,7 @@ Meteor.methods
       calculatedResult = Object.keys(groupedResult).map (nCode) ->
         neighbourhoodData = neighbourhoods.find((e) -> e.id is "0193#{nCode}0")
         answerData = groupedAnswerValues.find((e) -> e.id is neighbourhoodData.id)
-        value = groupedResult[nCode].length * if (answerData?) then answerData.average else 0
+        value = if (answerData?) then answerData.average else 0
 
         name: neighbourhoodData.name
         polygon: neighbourhoodData.polygon
@@ -179,7 +180,7 @@ Meteor.methods
           weight = 1
         else
           weight = 0
-          
+
         include: true
         lat: e.lat
         lng: e.lng
