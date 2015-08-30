@@ -2,9 +2,12 @@ app.controller "HeatMapCtrl2",
   ["$scope", "$state",  "$interval", "$timeout", "$window", "$meteor", "_util", "uiGmapGoogleMapApi", "uiGmapIsReady",
   ($scope, $state, $interval, $timeout, $window, $meteor, _util, uiGmapGoogleMapApi, uiGmapIsReady) ->
     map = undefined
+    heatmap = undefined
     uiGmapIsReady.promise(1).then (instances) ->
       instances.forEach (inst) ->
         map = inst.map
+        heatmap = new (google.maps.visualization.HeatmapLayer)(data: $scope.heatMapData)
+        heatmap.setMap map
     layer = undefined
 
     colors = ['rgb(255,255,204)','rgb(255,237,160)','rgb(254,217,118)','rgb(254,178,76)','rgb(253,141,60)','rgb(252,78,42)','rgb(227,26,28)','rgb(189,0,38)','rgb(128,0,38)']
@@ -141,7 +144,7 @@ app.controller "HeatMapCtrl2",
               stroke: {weight: 1, color: "#222222", opacity: 0.1},
               fill: {color: colors[r.level], opacity: 0.7},
               path: r.polygon
-          heatmap = new (google.maps.visualization.HeatmapLayer)(data: $scope.heatMapData)
+          heatmap.setData $scope.heatMapData
           heatmap.setMap map
         , (error) ->
           console.log(error)
