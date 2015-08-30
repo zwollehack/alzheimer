@@ -78,7 +78,6 @@ app.controller "HeatMapCtrl",
       skipValues[handle].innerHTML = values[handle]
       return
 
-
   ]
 
 # ---
