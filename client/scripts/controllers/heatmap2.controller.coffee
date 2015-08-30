@@ -55,7 +55,6 @@ app.controller "HeatMapCtrl2",
         zoomControlOptions:
           style: google.maps.ZoomControlStyle.SMALL
 
-    $scope.showHeat = true
     $scope.polys = []
     $scope.ageGroups = [
       name: "All"
@@ -127,19 +126,23 @@ app.controller "HeatMapCtrl2",
 
       updateTimeout = $timeout(->
         $scope.polys = []
+        $scope.heatMapData = [];
         $meteor
         .call("getUserData", $scope.levelOfDetail.value, $scope.ageGroup)
         .then((result) ->
-          console.log result
           if ($scope.levelOfDetail.value is "single")
-            result.splice(0, 100).forEach (r) ->
-              $scope.heatMapData.push({location: new google.maps.LatLng(r.lng, r.lat), weight: r.count})
+            $scope.showHeat = true
+            result.splice(0, 1000).forEach (r) ->
+              $scope.heatMapData.push({location: new google.maps.LatLng(r.lat, r.lng), weight: r.count})
           else if ($scope.levelOfDetail.value is "neighbourhoodCode")
+            $scope.showHeat = false
             $scope.polys = result.map (r, idx) ->
               id: idx
               stroke: {weight: 1, color: "#222222", opacity: 0.1},
               fill: {color: colors[r.level], opacity: 0.7},
               path: r.polygon
+          heatmap = new (google.maps.visualization.HeatmapLayer)(data: $scope.heatMapData)
+          heatmap.setMap map
         , (error) ->
           console.log(error)
         )
