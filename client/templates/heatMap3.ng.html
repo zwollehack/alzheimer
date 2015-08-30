@@ -1,0 +1,38 @@
+<div class="left">
+  <ui-gmap-google-map id="supplierMap" center="map.center" zoom="map.zoom" options="map.options">
+      <ui-gmap-layer id="maps" namespace="visualization" type="HeatmapLayer" show="showHeat" onCreated="heatLayerCallback"></ui-gmap-layer>
+      <ui-gmap-polygon
+              ng-repeat="poly in polys"
+              path="poly.path"
+              fill="poly.fill">
+      </ui-gmap-polygon>
+  </ui-gmap-google-map>
+</div>
+<div class="right">
+  <div class="container-fluid">
+    <div class="row">
+      <form>
+        <div class="form-group">
+          <label for="elderMin">Elder Min</label>
+          <input type="range" id="elderMin" min="0" value="50" max="110" step="1" ng-model="elderMin">
+        </div>
+        <div class="form-group">
+          <label for="elderMax">Elder Max</label>
+          <input type="range" id="elderMax" min="0" value="70" max="110" step="1" ng-model="elderMax">
+        </div>
+        <div class="form-group">
+          <label for="youngMin">Young Min</label>
+          <input type="range" id="youngMin" min="0" value="18" max="110" step="1" ng-model="youngMin">
+        </div>
+        <div class="form-group">
+          <label for="youngMax">Young Max</label>
+          <input type="range" id="youngMax" min="0" value="30" max="110" step="1" ng-model="youngMax">
+        </div>
+        <div class="form-group">
+          <label for="percentage">Percentage</label>
+          <input type="range" id="percentage" min="0" value="50" max="100" step="1" ng-model="percentage">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

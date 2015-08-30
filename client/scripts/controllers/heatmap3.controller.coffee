@@ -86,12 +86,17 @@ app.controller "HeatMapCtrl3",
       max: 200
     ]
     $scope.ageGroup = $scope.ageGroups[0]
+    $scope.elderMin = 40
+    $scope.elderMax = 60
+    $scope.youngMin = 18
+    $scope.youngMax = 30
+    $scope.percentage = 50
     uiGmapGoogleMapApi.then (maps) ->
       map = maps
 
     $scope.updateHeatmap = ->
       $meteor
-      .call("getUserData", $scope.ageGroup)
+      .call("getUserData", $scope.elderMax, $scope.elderMin, $scope.youngMax, $scope.youngMin, $scope.percentage)
       .then((result) ->
         console.log result
         # result.forEach (record) ->
@@ -109,5 +114,9 @@ app.controller "HeatMapCtrl3",
       )
 
 
-    $scope.$watch("ageGroup", $scope.updateHeatmap)
+    $scope.$watch("elderMin", $scope.updateHeatmap)
+    $scope.$watch("elderMax", $scope.updateHeatmap)
+    $scope.$watch("youngMax", $scope.updateHeatmap)
+    $scope.$watch("youngMin", $scope.updateHeatmap)
+    $scope.$watch("percentage", $scope.updateHeatmap)
  ]
